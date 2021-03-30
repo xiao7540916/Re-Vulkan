@@ -28,7 +28,7 @@ libdir = {}
 libdir["vulkan"] = "%{wks.location}/Binaries/ThirdParty/vulkan/vulkan-1.lib"
 
 group "ThirdParty"
-    include "Source/ThirdParty/glfw"
+    include "Source/ThirdParty"
 group ""
 
 group "Tutorials"

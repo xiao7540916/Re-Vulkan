@@ -96,7 +96,13 @@ namespace Horizon
 			VK_CHECK(vkEnumerateInstanceLayerProperties(&validationLayerCount, supportedValidationLayers.data()));
 			for (const auto& validationLayer : supportedValidationLayers)
 			{
-				LOG_TRACE("Supported instance layer: {} - vkspec version: {}.", validationLayer.layerName, validationLayer.specVersion);
+				LOG_TRACE("Supported instance layer: {} - vkspec version: {}.{}.{} {}: {}.",
+					validationLayer.layerName, 
+					VK_VERSION_MAJOR(validationLayer.specVersion), 
+					VK_VERSION_MINOR(validationLayer.specVersion), 
+					VK_VERSION_PATCH(validationLayer.specVersion), 
+					validationLayer.implementationVersion, 
+					validationLayer.description);
 			}
 
 			const auto& requiredValidationLayers = info.instanceLayers;

@@ -53,18 +53,6 @@ namespace Horizon
 		return false;
 	}
 
-	static bool IsInstanceExtensionSupported(const char* name, const std::vector<VkExtensionProperties>& supportedExtensions)
-	{
-		for (const auto& supportedExtension : supportedExtensions)
-		{
-			if (strcmp(name, supportedExtension.extensionName) == 0)
-			{
-				return true;
-			}
-		}
-		return false;
-	}
-
 	Instance::Instance()
 		: mHandle(VK_NULL_HANDLE)
 		, mDebugUtilsMessenger(VK_NULL_HANDLE)
@@ -81,7 +69,7 @@ namespace Horizon
 		}
 	}
 
-	bool Instance::Init(const InstanceInfo& info)
+	bool Instance::Init(const InstanceInitInfo& info)
 	{
 		LOG_TRACE("Init instance.");
 
@@ -105,7 +93,7 @@ namespace Horizon
 					validationLayer.description);
 			}
 
-			const auto& requiredValidationLayers = info.instanceLayers;
+			const auto& requiredValidationLayers = info.instanceLayers.GetData();
 			for (const auto& requiredValidationLayer : requiredValidationLayers)
 			{
 				if (IsInstanceLayerSupported(requiredValidationLayer, supportedValidationLayers))
@@ -130,10 +118,10 @@ namespace Horizon
 			LOG_TRACE("Supported instance extension: {} - vkspec version: {}.", instanceExtension.extensionName, instanceExtension.specVersion);
 		}
 
-		const auto& requiredInstanceExtensions = info.instanceExtensions;
+		const auto& requiredInstanceExtensions = info.instanceExtensions.GetData();
 		for (const auto& requiredInstancwExtension : requiredInstanceExtensions)
 		{
-			if (IsInstanceExtensionSupported(requiredInstancwExtension, supportedInstanceExtensions))
+			if (IsExtensionSupported(requiredInstancwExtension, supportedInstanceExtensions))
 			{
 				mEnabledInstanceExtensions.emplace_back(requiredInstancwExtension);
 				LOG_INFO("Enabled instance extension: {}.", requiredInstancwExtension);
@@ -145,10 +133,10 @@ namespace Horizon
 			}
 		}
 
-		const auto& optionalInstanceExtensions = info.optionalInstanceExtensions;
+		const auto& optionalInstanceExtensions = info.optionalInstanceExtensions.GetData();
 		for (const auto& optionalInstanceExtension : optionalInstanceExtensions)
 		{
-			if (IsInstanceExtensionSupported(optionalInstanceExtension, supportedInstanceExtensions))
+			if (IsExtensionSupported(optionalInstanceExtension, supportedInstanceExtensions))
 			{
 				mEnabledInstanceExtensions.emplace_back(optionalInstanceExtension);
 				LOG_INFO("Enabled instance extension: {}.", optionalInstanceExtension);
@@ -178,12 +166,12 @@ namespace Horizon
 			if ((!enableDebugUtils) && (!enableDebugReport))
 			{
 				LOG_WARNING("If validation layers are enabled. Extension: {} or {} must be enabled." VK_EXT_DEBUG_UTILS_EXTENSION_NAME, VK_EXT_DEBUG_REPORT_EXTENSION_NAME);
-				if (IsInstanceExtensionSupported(VK_EXT_DEBUG_UTILS_EXTENSION_NAME, supportedInstanceExtensions))
+				if (IsExtensionSupported(VK_EXT_DEBUG_UTILS_EXTENSION_NAME, supportedInstanceExtensions))
 				{
 					mEnabledInstanceExtensions.emplace_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
 					LOG_INFO("Enabled instance extension: {}.", VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
 				}
-				else if (IsInstanceExtensionSupported(VK_EXT_DEBUG_REPORT_EXTENSION_NAME, supportedInstanceExtensions))
+				else if (IsExtensionSupported(VK_EXT_DEBUG_REPORT_EXTENSION_NAME, supportedInstanceExtensions))
 				{
 					mEnabledInstanceExtensions.emplace_back(VK_EXT_DEBUG_REPORT_EXTENSION_NAME);
 					LOG_INFO("Enabled instance extension: {}.", VK_EXT_DEBUG_REPORT_EXTENSION_NAME);
@@ -199,10 +187,10 @@ namespace Horizon
 		VkApplicationInfo appInfo = {};
 		appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
 		appInfo.apiVersion = VULKAN_API_VERSION;
-		appInfo.pApplicationName = info.appName;
-		appInfo.applicationVersion = info.appVersion;
-		appInfo.pEngineName = HORIZON_ENGINE_NAME;
-		appInfo.engineVersion = HORIZON_ENGINE_VERSION;
+		appInfo.pApplicationName = info.applicationInfo.pApplicationName;
+		appInfo.applicationVersion = info.applicationInfo.applicationVersion;
+		appInfo.pEngineName = info.applicationInfo.pEngineName;
+		appInfo.engineVersion = info.applicationInfo.engineVersion;
 
 		VkInstanceCreateInfo instanceInfo = {};
 		instanceInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
@@ -241,6 +229,12 @@ namespace Horizon
 		}
 
 		VK_CHECK(vkCreateInstance(&instanceInfo, VULKAN_ALLOCATION_CALLBACKS, &mHandle));
+
+		uint32 physicalDeviceCount = 0;
+		VK_CHECK(vkEnumeratePhysicalDevices(mHandle, &physicalDeviceCount, nullptr));
+		assert(physicalDeviceCount > 0 && "No available physical device.");
+		mAvailablePhysicalDevices.resize(physicalDeviceCount);
+		VK_CHECK(vkEnumeratePhysicalDevices(mHandle, &physicalDeviceCount, mAvailablePhysicalDevices.data()));
 
 		if (enableValidationLayers)
 		{

@@ -11,6 +11,7 @@ project "VulkanInstance"
     links
     {
         "Engine",
+        "VulkanBase",
         "%{libdir.vulkan}",
     }
 
@@ -27,6 +28,7 @@ project "VulkanInstance"
         "%{includedir.Engine}",
         "%{includedir.vulkan}",
         "%{includedir.spdlog}",
+        "%{includedir.VulkanBase}",
     }
 
     filter "system:windows"

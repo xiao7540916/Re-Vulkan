@@ -21,8 +21,14 @@ includedir["ThirdParty"] = "%{wks.location}/Source/ThirdParty"
 includedir["vulkan"] = "%{wks.location}/Source/ThirdParty/vulkan/include"
 includedir["glfw"] = "%{wks.location}/Source/ThirdParty/glfw/include"
 includedir["spdlog"] = "%{wks.location}/Source/ThirdParty/spdlog/include"
+includedir["vma"] = "%{wks.location}/Source/ThirdParty/vma/include"
+includedir["glm"] = "%{wks.location}/Source/ThirdParty/glm/include"
 -- Engine
 includedir["Engine"] = "%{wks.location}/Source/Engine"
+-- Tutorials
+includedir["VulkanBase"] = "%{wks.location}/Source/Tutorials/VulkanBase"
+includedir["VulkanInstance"] = "%{wks.location}/Source/Tutorials/VulkanInstance"
+includedir["VulkanDevice"] = "%{wks.location}/Source/Tutorials/VulkanDevice"
 
 libdir = {}
 libdir["vulkan"] = "%{wks.location}/Binaries/ThirdParty/vulkan/vulkan-1.lib"
@@ -32,7 +38,9 @@ group "ThirdParty"
 group ""
 
 group "Tutorials"
+    include "Source/Tutorials/VulkanBase"
     include "Source/Tutorials/VulkanInstance"
+    include "Source/Tutorials/VulkanDevice"
 group ""
 
 project "Engine"
@@ -64,6 +72,8 @@ project "Engine"
         -- Third party
         "%{includedir.glfw}",
         "%{includedir.spdlog}",
+        "%{includedir.vma}",
+        "%{includedir.glm}",
     }
 
     links

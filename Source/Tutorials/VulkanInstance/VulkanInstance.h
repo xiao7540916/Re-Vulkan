@@ -6,26 +6,56 @@ namespace Horizon
 {
 	extern bool gInstanceInitialized;
 
-	struct InstanceInfo
+	class InstanceLayers
 	{
-		const char* appName = nullptr;
-		uint32 appVersion = 0;
+	public:
+		void Add(const char* name)
+		{
+			mInstanceLayers.emplace_back(name);
+		}
+		const auto& GetData() const { return mInstanceLayers; }
+	private:
+		std::vector<const char*> mInstanceLayers;
+	};
+
+	class InstanceExtensions
+	{
+	public:
+		void Add(const char* name)
+		{
+			mInstanceExtensions.emplace_back(name);
+		}
+		const auto& GetData() const { return mInstanceExtensions; }
+	private:
+		std::vector<const char*> mInstanceExtensions;
+	};
+
+	class OptionalInstanceExtensions
+	{
+	public:
+		void Add(const char* name)
+		{
+			mOptionalInstanceExtensions.emplace_back(name);
+		}
+		const auto& GetData() const { return mOptionalInstanceExtensions; }
+	private:
+		std::vector<const char*> mOptionalInstanceExtensions;
+	};
+
+	struct InstanceInitInfo
+	{
+		struct ApplicationInfo
+		{
+			const char* pApplicationName;
+			uint32 applicationVersion;
+			const char* pEngineName;
+			uint32 engineVersion;
+		};
+		ApplicationInfo applicationInfo;
 		bool enableValidationLayers = VULKAN_DEFAULT_ENABLE_VALIDATION_LAYERS;
-		void AddInstanceLayer(const char* name)
-		{
-			instanceLayers.emplace_back(name);
-		}
-		void AddInstanceExtension(const char* name)
-		{
-			instanceExtensions.emplace_back(name);
-		}
-		void AddOptionalInstanceExtension(const char* name)
-		{
-			optionalInstanceExtensions.emplace_back(name);
-		}
-		std::vector<const char*> instanceLayers;
-		std::vector<const char*> instanceExtensions;
-		std::vector<const char*> optionalInstanceExtensions;
+		InstanceLayers instanceLayers;
+		InstanceExtensions instanceExtensions;
+		OptionalInstanceExtensions optionalInstanceExtensions;
 	};
 
 	class Instance
@@ -35,10 +65,15 @@ namespace Horizon
 		Instance();
 		~Instance();
 
-		bool Init(const InstanceInfo& info);
+		bool Init(const InstanceInitInfo& info);
 		void Destroy();
 
 		bool IsInstanceExtensionEnabled(const char* extension);
+
+		inline VkInstance GetHandle() const { return mHandle; }
+		inline const std::vector<const char*>& GetEnabledInstanceLayers() const { return mEnabledInstanceLayers; }
+		inline const std::vector<const char*>& GetEnabledInstanceExtensions() const { return mEnabledInstanceExtensions; }
+		inline const std::vector<VkPhysicalDevice>& GetAvailablePhysicalDevices() const { return mAvailablePhysicalDevices; }
 
 	private:
 
@@ -49,5 +84,7 @@ namespace Horizon
 
 		VkDebugUtilsMessengerEXT mDebugUtilsMessenger;
 		VkDebugReportCallbackEXT mDebugReportCallback;
+
+		std::vector<VkPhysicalDevice> mAvailablePhysicalDevices;
 	};
 }

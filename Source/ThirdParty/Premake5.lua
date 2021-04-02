@@ -2,6 +2,8 @@ project "glfw"
 kind "StaticLib"
 language "C"
 
+location("%{wks.location}/Source/ThirdParty/glfw")
+
 targetdir ("%{wks.location}/Build/Bin/%{prj.name}")
 objdir ("%{wks.location}/Build/Bin/%{prj.name}")
 

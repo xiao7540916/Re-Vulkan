@@ -20,10 +20,11 @@ namespace Horizon
 		assert(mDebugMarker.vkCmdDebugMarkerBegin != VK_NULL_HANDLE);
 		assert(mDebugMarker.vkCmdDebugMarkerEnd != VK_NULL_HANDLE);
 		assert(mDebugMarker.vkCmdDebugMarkerInsert != VK_NULL_HANDLE);
+		mDebugMarker.device = mHandle;
 		mDebugMarker.initialized = true;
 	}
 
-	void Device::DebugMarker::SetObjectName(VkDevice device, uint64 object, VkDebugReportObjectTypeEXT objectType, const char* name)
+	void Device::DebugMarker::SetObjectName(uint64 object, VkDebugReportObjectTypeEXT objectType, const char* name)
 	{
 		if (initialized)
 		{
@@ -36,7 +37,7 @@ namespace Horizon
 		}
 	}
 
-	void Device::DebugMarker::SetObjectTag(VkDevice device, uint64 object, VkDebugReportObjectTypeEXT objectType, uint64 tagName, uint64 tagSize, const void* tag)
+	void Device::DebugMarker::SetObjectTag(uint64 object, VkDebugReportObjectTypeEXT objectType, uint64 tagName, uint64 tagSize, const void* tag)
 	{
 		if (initialized)
 		{
@@ -91,9 +92,13 @@ namespace Horizon
 		, mHandle(VK_NULL_HANDLE)
 		, mGpu(gpu)
 		, mMemoryAllocator(VK_NULL_HANDLE)
+		, mGpuProperties({})
+		, mGpuFeatures({})
 	{
 		assert(instance != nullptr);
+		assert(gInstanceInitialized);
 		assert(gDevice == nullptr && "Horizon only supports one device.");
+		gDevice = this;
 	}
 
 	Device::~Device()
@@ -172,7 +177,7 @@ namespace Horizon
 
 		uint32& graphicsQueueFamilyIndex = mQueueFamilyIndices[(uint32)QueueFamily::Graphics];
 		uint32& computeQueueFamilyIndex = mQueueFamilyIndices[(uint32)QueueFamily::Compute];
-		uint32& transferQueueFamilyQueue = mQueueFamilyIndices[(uint32)QueueFamily::Transfer];
+		uint32& transferQueueFamilyIndex = mQueueFamilyIndices[(uint32)QueueFamily::Transfer];
 
 		for (uint32 i = 0; i < (uint32)mQueueFamilyProperties.size(); i++)
 		{
@@ -185,11 +190,15 @@ namespace Horizon
 			{
 				computeQueueFamilyIndex = i;
 			}
-			else if ((flags & VK_QUEUE_TRANSFER_BIT) != 0 && transferQueueFamilyQueue == (uint32)-1)
+			else if ((flags & VK_QUEUE_TRANSFER_BIT) != 0 && transferQueueFamilyIndex == (uint32)-1)
 			{
-				transferQueueFamilyQueue = i;
+				transferQueueFamilyIndex = i;
 			}
 		}
+
+		LOG_INFO("Graphics queue family index is: {}.", graphicsQueueFamilyIndex);
+		LOG_INFO("Compute queue family index is: {}.", computeQueueFamilyIndex);
+		LOG_INFO("Transfer queue family index is: {}.", transferQueueFamilyIndex);
 	}
 
 	void Device::CreteaLogicalDevice_Internal(const DeviceInitInfo& info)
@@ -277,9 +286,9 @@ namespace Horizon
 #endif // VULKAN_ENABLE_DEBUG_MARKER
 
 		// Init command queues.
-		/*for (uint32 family = 0; family < HORIZON_ARRAYSIZE(mQueueFamilyIndices); ++family)
+		/*for (uint32 family = 0; family < HORIZON_ARRAYSIZE(mQueueFamilyIndices); family++)
 		{
-			for (uint32 queueIndex = 0; queueIndex < (uint32)mCommandQueues[family].size(); ++queueIndex)
+			for (uint32 queueIndex = 0; queueIndex < (uint32)mCommandQueues[family].size(); queueIndex++)
 			{
 				mCommandQueues[family][queueIndex] = new CommandQueue(mQueueFamilyIndices[family], queueIndex);
 			}

@@ -20,5 +20,7 @@ namespace Horizon
 
 	/// Predefine classes
 	class Instance;
+	class Device;
 	class CommandQueue;
+	class CommandBuffer;
 }

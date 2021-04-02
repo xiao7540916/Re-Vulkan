@@ -29,6 +29,7 @@ includedir["Engine"] = "%{wks.location}/Source/Engine"
 includedir["VulkanBase"] = "%{wks.location}/Source/Tutorials/VulkanBase"
 includedir["VulkanInstance"] = "%{wks.location}/Source/Tutorials/VulkanInstance"
 includedir["VulkanDevice"] = "%{wks.location}/Source/Tutorials/VulkanDevice"
+includedir["VulkanQueue"] = "%{wks.location}/Source/Tutorials/VulkanQueue"
 
 libdir = {}
 libdir["vulkan"] = "%{wks.location}/Binaries/ThirdParty/vulkan/vulkan-1.lib"
@@ -41,6 +42,7 @@ group "Tutorials"
     include "Source/Tutorials/VulkanBase"
     include "Source/Tutorials/VulkanInstance"
     include "Source/Tutorials/VulkanDevice"
+    include "Source/Tutorials/VulkanQueue"
 group ""
 
 project "Engine"

@@ -91,6 +91,28 @@ namespace Horizon
         inline const VkPhysicalDeviceProperties& GetPhysicalDeviceProperties() const { return mGpuProperties; }
         inline const VkPhysicalDeviceFeatures2& GetPhysicalDeviceFeatures() const { return mGpuFeatures; }
 
+#if defined(VULKAN_ENABLE_DEBUG_MARKER)
+        class DebugMarker
+        {
+        public:
+            void SetObjectName(uint64 object, VkDebugReportObjectTypeEXT objectType, const char* name);
+            void SetObjectTag(uint64 object, VkDebugReportObjectTypeEXT objectType, uint64 tagName, uint64 tagSize, const void* tag);
+            void Begin(VkCommandBuffer cb, const char* pMarkerName, const Vector4& color);
+            void Insert(VkCommandBuffer cb, const char* pMarkerName, const Vector4& color);
+            void End(VkCommandBuffer cb);
+        private:
+            friend class Device;
+            bool initialized = false;
+            VkDevice device = VK_NULL_HANDLE;
+            PFN_vkDebugMarkerSetObjectNameEXT vkDebugMarkerSetObjectName = VK_NULL_HANDLE;
+            PFN_vkDebugMarkerSetObjectTagEXT vkDebugMarkerSetObjectTag = VK_NULL_HANDLE;
+            PFN_vkCmdDebugMarkerBeginEXT vkCmdDebugMarkerBegin = VK_NULL_HANDLE;
+            PFN_vkCmdDebugMarkerInsertEXT vkCmdDebugMarkerInsert = VK_NULL_HANDLE;
+            PFN_vkCmdDebugMarkerEndEXT vkCmdDebugMarkerEnd = VK_NULL_HANDLE;
+        };
+        inline const DebugMarker& GetDebugMarker() const { return mDebugMarker; }
+#endif // VULKAN_ENABLE_DEBUG_MARKER
+
     private:
 
         void InitPhysicalDevice_Internal();
@@ -119,22 +141,6 @@ namespace Horizon
         VkPhysicalDeviceFeatures2 mGpuFeatures;
 
 #if defined(VULKAN_ENABLE_DEBUG_MARKER)
-        struct DebugMarker
-        {
-            bool initialized = false;
-
-            PFN_vkDebugMarkerSetObjectNameEXT vkDebugMarkerSetObjectName = VK_NULL_HANDLE;
-            PFN_vkDebugMarkerSetObjectTagEXT vkDebugMarkerSetObjectTag = VK_NULL_HANDLE;
-            PFN_vkCmdDebugMarkerBeginEXT vkCmdDebugMarkerBegin = VK_NULL_HANDLE;
-            PFN_vkCmdDebugMarkerInsertEXT vkCmdDebugMarkerInsert = VK_NULL_HANDLE;
-            PFN_vkCmdDebugMarkerEndEXT vkCmdDebugMarkerEnd = VK_NULL_HANDLE;
-
-            void SetObjectName(VkDevice device, uint64 object, VkDebugReportObjectTypeEXT objectType, const char* name);
-            void SetObjectTag(VkDevice device, uint64 object, VkDebugReportObjectTypeEXT objectType, uint64 tagName, uint64 tagSize, const void* tag);
-            void Begin(VkCommandBuffer cmdbuffer, const char* pMarkerName, const Vector4& color);
-            void Insert(VkCommandBuffer cmdbuffer, const char* pMarkerName, const Vector4& color);
-            void End(VkCommandBuffer cmdBuffer);
-        };
         DebugMarker mDebugMarker;
         void SetupDebugMarker();
 #endif // VULKAN_ENABLE_DEBUG_MARKER

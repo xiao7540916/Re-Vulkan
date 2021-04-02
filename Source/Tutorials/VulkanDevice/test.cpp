@@ -46,9 +46,17 @@ int main()
 
 	Device device(&instance, gpu);
 	device.Init(deviceinfo);
+
+	// 如果你在定义了 VULKAN_ENABLE_DEBUG_MARKER 的情况下
+	// 然后在 RenderDoc 里启动 Buid/Bin/VulkanDevice/VulkanDevice.exe
+	// 你将会看到黄色的警告消失了 "Couldn't enable debug marker. Please note that debug marker can only be enabled for offline testing."
+	// 说明 Debug Marker 被正常启用
+
 	device.Destory();
 
 	instance.Destroy();
+
+	system("pause");
 
 	return EXIT_SUCCESS;
 }

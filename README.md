@@ -13,3 +13,6 @@ C++17
 1. git clone --recursive https://github.com/harukumo/Re-Vulkan.git
 
 2. Run GenerateProjects.bat
+
+# Contributing
+Contributions are welcome.

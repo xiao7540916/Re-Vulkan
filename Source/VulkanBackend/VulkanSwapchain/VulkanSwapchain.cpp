@@ -297,7 +297,7 @@ namespace Horizon
 		}
 	}
 
-	Swapchain::State Swapchain::AcquireNextImage(uint32* outImageIndex, VkSemaphore* outSemaphore)
+	Swapchain::State Swapchain::AcquireNextImage(uint32* outImageIndex, VkSemaphore* outSemaphore, Fence* outFence)
 	{
 		assert(mCurrentImageIndex == (uint32)-1);
 
@@ -331,9 +331,6 @@ namespace Horizon
 		mCurrentImageIndex = imageIndex;
 		*outImageIndex = mCurrentImageIndex;
 		*outSemaphore = mImageAcquiredSemaphores[mSemaphoreIndex];
-
-		bool ret = fenceManager.WaitForFence(mImageAcquiredFences[mSemaphoreIndex], UINT64_MAX);
-		assert(ret);
 
 		return State::Optimal;
 	}

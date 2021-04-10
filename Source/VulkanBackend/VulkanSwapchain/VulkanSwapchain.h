@@ -44,7 +44,7 @@ namespace Horizon
 		inline const Vector<VkImage>& GetImages() const { return mImages; }
 
 		State Present(CommandQueue* presentQueue, VkSemaphore* renderCompleteSemaphore);
-		State AcquireNextImage(uint32* outImageIndex, VkSemaphore* outSemaphore);
+		State AcquireNextImage(uint32* outImageIndex, VkSemaphore* outSemaphore, Fence* outFence);
 
 	private:
 

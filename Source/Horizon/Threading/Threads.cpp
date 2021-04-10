@@ -1,4 +1,4 @@
-#include "Horizon/Core/Threads.h"
+#include "Threads.h"
 
 namespace Horizon
 {

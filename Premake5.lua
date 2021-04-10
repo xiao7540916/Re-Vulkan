@@ -16,20 +16,23 @@ workspace "Horizon"
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 includedir = {}
+includedir["Source"] = "%{wks.location}/Source"
 -- Third party
 includedir["ThirdParty"] = "%{wks.location}/Source/ThirdParty"
 includedir["vulkan"] = "%{wks.location}/Source/ThirdParty/vulkan/include"
+includedir["vma"] = "%{wks.location}/Source/ThirdParty/vma/include"
 includedir["glfw"] = "%{wks.location}/Source/ThirdParty/glfw/include"
 includedir["spdlog"] = "%{wks.location}/Source/ThirdParty/spdlog/include"
-includedir["vma"] = "%{wks.location}/Source/ThirdParty/vma/include"
 includedir["glm"] = "%{wks.location}/Source/ThirdParty/glm/include"
--- Engine
-includedir["Engine"] = "%{wks.location}/Source/Engine"
--- Tutorials
-includedir["VulkanBase"] = "%{wks.location}/Source/Tutorials/VulkanBase"
-includedir["VulkanInstance"] = "%{wks.location}/Source/Tutorials/VulkanInstance"
-includedir["VulkanDevice"] = "%{wks.location}/Source/Tutorials/VulkanDevice"
-includedir["VulkanQueue"] = "%{wks.location}/Source/Tutorials/VulkanQueue"
+-- Horizon Engine
+includedir["Horizon"] = "%{wks.location}/Source/Horizon"
+-- VulkanBackend
+includedir["VulkanBase"] = "%{wks.location}/Source/VulkanBackend/VulkanBase"
+includedir["VulkanInstance"] = "%{wks.location}/Source/VulkanBackend/VulkanInstance"
+includedir["VulkanDevice"] = "%{wks.location}/Source/VulkanBackend/VulkanDevice"
+includedir["VulkanQueue"] = "%{wks.location}/Source/VulkanBackend/VulkanQueue"
+includedir["VulkanSwapchain"] = "%{wks.location}/Source/VulkanBackend/VulkanSwapchain"
+includedir["VulkanCommandBuffer"] = "%{wks.location}/Source/VulkanBackend/VulkanCommandBuffer"
 
 libdir = {}
 libdir["vulkan"] = "%{wks.location}/Binaries/ThirdParty/vulkan/vulkan-1.lib"
@@ -38,15 +41,21 @@ group "ThirdParty"
     include "Source/ThirdParty"
 group ""
 
-group "Tutorials"
-    include "Source/Tutorials/VulkanBase"
-    include "Source/Tutorials/VulkanInstance"
-    include "Source/Tutorials/VulkanDevice"
-    include "Source/Tutorials/VulkanQueue"
+group "VulkanBackend"
+    include "Source/VulkanBackend/VulkanBase"
+    include "Source/VulkanBackend/VulkanInstance"
+    include "Source/VulkanBackend/VulkanDevice"
+    include "Source/VulkanBackend/VulkanQueue"
+    include "Source/VulkanBackend/VulkanSwapchain"
+    include "Source/VulkanBackend/VulkanCommandBuffer"
 group ""
 
-project "Engine"
-    location ("%{wks.location}/Source/Engine")
+group "Testing"
+    include "Source/Testing"
+group ""
+
+project "Horizon"
+    location ("%{wks.location}/Source/Horizon")
     kind "StaticLib"
     language "C++"
     cppdialect "C++17"
@@ -70,11 +79,13 @@ project "Engine"
 
     includedirs
     {
-        "%{includedir.Engine}",
+        "%{includedir.Source}",
+        "%{includedir.Horizon}",
         -- Third party
+        "%{includedir.vulkan}",
+        "%{includedir.vma}",
         "%{includedir.glfw}",
         "%{includedir.spdlog}",
-        "%{includedir.vma}",
         "%{includedir.glm}",
     }
 

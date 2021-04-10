@@ -6,6 +6,11 @@
 
 namespace Horizon
 {
+	void RenderGraph::GraphVisfy() const
+	{
+		mGraph.GraphVizify();
+	}
+
 	RenderGraphVirtualResource* RenderGraph::GetResourceByHandle(RenderGraphHandleBase handle)
 	{
 		return &mResources[handle];

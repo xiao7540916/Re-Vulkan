@@ -6,7 +6,6 @@ namespace Horizon
 {
     void RenderGraphTexture::Create(RenderDevice* device, const Description& desc, ResourceBindFlags usage)
     {
-        assert(handle == RENDER_BACKEND_NULL_HANDLE);
         // TODO
     }
 

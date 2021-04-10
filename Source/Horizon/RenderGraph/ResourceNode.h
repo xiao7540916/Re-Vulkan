@@ -24,7 +24,7 @@ namespace Horizon
 		uint64 GetIndex() const { return mIndex; }
 		RenderGraphVirtualResource* GetResource() { return mResource; }
 		const RenderGraphVirtualResource& GetResource() const { return *mResource; }
-		void Graphvizify() const override;
+		void GraphVizify() const override;
 	private:
 		friend class RenderGraph;
 		friend class RenderGraphVirtualResource;

@@ -18,7 +18,7 @@ namespace Horizon
 		const ResourceList& GetDevirtualizeList() const { return mDevirtualizeList; }
 		const ResourceList& GetDestroyList() const { return mDestroyList; }
 		RenderGraphPassExecutor* GetPassExecutor() { return mPassExecutor; }
-		void Graphvizify() const override;
+		void GraphVizify() const override;
 	protected:
 		friend class RenderGraph;
 		friend class RenderGraphPassExecutor;

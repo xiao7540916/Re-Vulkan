@@ -8,7 +8,7 @@ namespace Horizon
 		auto& edges = mEdges;
 
 		// Compute initial resource and pass reference counts.
-		for (Edge* edge : edges) 
+		for (Edge* edge : edges)
 		{
 			edge->from->mRefCount++;
 		}
@@ -17,13 +17,13 @@ namespace Horizon
 		Vector<Node*> stack;
 		for (Node* node : nodes)
 		{
-			if (node->GetRefCount() == 0) 
+			if (node->GetRefCount() == 0)
 			{
 				stack.push_back(node);
 			}
 		}
 
-		while (!stack.empty()) 
+		while (!stack.empty())
 		{
 			Node* node = stack.back();
 			stack.pop_back();
@@ -45,6 +45,11 @@ namespace Horizon
 		mNodes.clear();
 	}
 
+	void RenderDependencyGraph::GraphVizify() const
+	{
+
+	}
+
 	void RenderDependencyGraph::RegisterNode(Node* node)
 	{
 		mNodes.push_back(node);
@@ -62,13 +67,13 @@ namespace Horizon
 		return (!from->IsCulled()) && !(to->IsCulled());
 	}
 
-	void RenderDependencyGraph::Node::Graphvizify() const
+	void RenderDependencyGraph::Edge::GraphVizify() const
 	{
 
 	}
 
-	void RenderDependencyGraph::Graphvizify() const
+	void RenderDependencyGraph::Node::GraphVizify() const
 	{
-		
+
 	}
 }

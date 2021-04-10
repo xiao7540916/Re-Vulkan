@@ -9,4 +9,9 @@ namespace Horizon
     {
 
     }
+
+    void PassNode::GraphVizify() const
+    {
+
+    }
 }

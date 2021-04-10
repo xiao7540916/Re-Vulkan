@@ -32,7 +32,7 @@ namespace Horizon
         return mRenderGraph->GetResouceNode(mParentIndex);
     }
 
-    void ResourceNode::Graphvizify() const
+    void ResourceNode::GraphVizify() const
     {
         
     }

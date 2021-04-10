@@ -28,6 +28,7 @@ namespace Horizon
 		RenderDependencyGraph* GetGraph() { return &mGraph; }
 		PassNode* GetPassNode(uint64 index) { return &mPassNodes[index]; }
 		ResourceNode* GetResouceNode(uint64 index) { return &mResourceNodes[index]; }
+		void GraphVisfy() const;
 	private:
 		friend class RenderGraphRegistry;
 		RenderGraphVirtualResource* GetResourceByHandle(RenderGraphHandleBase handle);
